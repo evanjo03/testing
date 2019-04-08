@@ -1,8 +1,5 @@
 //bring in our button object
-var buttons = require("../buttons");
-const { exec } = require("child_process");
-var fs = require("fs");
-var text = "";
+var buttons = require("./buttons");
 
 
 
@@ -47,13 +44,12 @@ function convert(number) {
 }
 
 
+
 function initial() {
     //this function has the initial script variables and sets up the initial segment of the call
     text +=
-        `#include <AutoItConstants.au3>\r\nHotKeySet("{ESC}", "Terminate")\r\n
-        Func Terminate()\r\n
-        Exit\r\n
-        EndFunc   ;==>Terminate\r\n`
+        `#include <AutoItConstants.au3>\r\nHotKeySet("{ESC}", "Terminate")\r\nFunc Terminate()\r\nExit\r\n
+    EndFunc   ;==>Terminate\r\n`
 }
 
 function makeCall() {
@@ -62,7 +58,7 @@ function makeCall() {
     var pin = convert("38883");
 
     //call button
-    text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttons.mscButtons.callStart.coords}, 1, 0)\r\n`
+    text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttonOther.callStart.coords}, 1, 0)\r\n`
 
     //wait for call
     sleep(1000);
@@ -71,11 +67,11 @@ function makeCall() {
     text += callNumber;
 
     //hit call button
-    text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttons.mscButtons.call.coords}, 1, 0)\r\n`
+    text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttonOther.call.coords}, 1, 0)\r\n`
 
     //when call starts, select keypad button
     sleep(3000);
-    text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttons.mscButtons.keypad.coords}, 1, 0)\r\n`
+    text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttonOther.keypad.coords}, 1, 0)\r\n`
 
     //enter pin
     sleep(1500);
@@ -88,7 +84,6 @@ function makeCall() {
     sleep(1500);
     hash();
 }
-
 //====================================================================================================
 //=====================================functions to convert commonly used AutoIT methods==============
 function sleep(num) {
@@ -96,7 +91,7 @@ function sleep(num) {
 }
 
 function hash() {
-    text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttons.mscButtons.hash.coords}, 1, 0)\r\n`
+    text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttonOther.hash.coords}, 1, 0)\r\n`
 }
 
 //function to handle initial check in of work orders
@@ -116,13 +111,13 @@ function checkOut() {
     sleep(2800);
     hash();
     sleep(1400);
-    text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttons.numberButtons[1].coords}, 1, 0)\r\n`
+    text += `MouseClick ( $MOUSE_CLICK_LEFT, ${button[1].coords}, 1, 0)\r\n`
     sleep(1300);
     hash();
     sleep(1300)
     hash();
     sleep(1300);
-    text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttons.numberButtons[1].coords}, 1, 0)\r\n`
+    text += `MouseClick ( $MOUSE_CLICK_LEFT, ${button[1].coords}, 1, 0)\r\n`
     sleep(3250);
     hash();
     sleep(2300);
@@ -131,86 +126,30 @@ function checkOut() {
 
 //====================================================================================================
 //=====================================starting the call==============================================
-
+initial();
 //from the .txt, push numbers into an array
-
+WOarray = data.trim().split("\r\n");
 
 //convert each number to the macro and add to the text
-
-//     case "out":
-//         for (var i = 0; i < WOarray.length; i++) {
-//             makeCall();
-//             text += (convert(WOarray[i]))
-//             checkOut();
-//             text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttonOther.end.coords}, 1, 0)\r\n`
-//             sleep(3000)
-//         }
-//         break;
-
-// }
-
-
-module.exports = function (app) {
-
-
-    app.post("/api/workorders/inOut", function (req, res) {
-        //define our array
-        var workOrders = req.body['data[]'];
-
-        //do our logic to turn the work orders into macro code
-        initial();
-
-        for (var i = 0; i < workOrders.length; i++) {
+switch (IVR) {
+    case "in":
+        for (var i = 0; i < WOarray.length; i++) {
             makeCall();
-            text += (convert(workOrders[i]));
+            text += (convert(WOarray[i]));
             checkIn();
-            text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttons.mscButtons.end.coords}, 1, 0)\r\n`
-            sleep(3000);
-            makeCall();
-            text += (convert(workOrders[i]))
-            checkOut();
-            text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttons.mscButtons.end.coords}, 1, 0)\r\n`
+            text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttonOther.end.coords}, 1, 0)\r\n`
             sleep(3000)
         }
-
-        //return the instructions to the frontend
-        fs.writeFile("test.au3", text, function (error) {
-            if (error) throw error;
-            console.log("You added to test.au3");
-            exec("test.au3").unref();
-            text = "";
-        });
-    })
-    app.post("/api/workorders/out", function (req, res) {
-
-        //define our array
-        var workOrders = req.body['data[]'];
-
-        //do our logic to turn the work orders into macro code
-        initial();
-
-        for (var i = 0; i < workOrders.length; i++) {
+        break;
+    case "out":
+        for (var i = 0; i < WOarray.length; i++) {
             makeCall();
-            text += (convert(workOrders[i]))
+            text += (convert(WOarray[i]))
             checkOut();
-            text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttons.mscButtons.end.coords}, 1, 0)\r\n`
+            text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttonOther.end.coords}, 1, 0)\r\n`
             sleep(3000)
         }
-        //return the instructions to the frontend
-        fs.writeFile("test.au3", text, function (error) {
-            if (error) throw error;
-            console.log("You added to test.au3");
-            exec("test.au3").unref();
-            text = "";
-        });
-    })
-
-
-
-
-
-
-
-
-
+        break;
+    default:
+        console.log("didn't work")
 }

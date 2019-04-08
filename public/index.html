@@ -24,19 +24,16 @@
             <div class="col">
                 <form>
                     <div class="form-group">
-                        <label for="check-in">Check-in numbers</label>
-                        <textarea class="form-control" id="check-in-form" rows="5"></textarea>
+                        <select class="form-control" id="type">
+                            <option>Check-Out</option>
+                            <option>Check-In and Check-Out</option>
+                        </select>
                     </div>
-                    <button type="submit" id="submit-check-in">Submit</button>
-                </form>
-            </div>
-            <div class="col">
-                <form>
                     <div class="form-group">
-                        <label for="check-out">Check-out numbers</label>
-                        <textarea class="form-control" id="check-out-form" rows="5"></textarea>
-                        <button type="submit" id="submit-check-out">Submit</button>
+                        <label for="numbers">Work Order Numbers:</label>
+                        <textarea class="form-control" id="number-form" rows="10"></textarea>
                     </div>
+                    <button class="btn btn-primary" type="submit" id="submit-option">Submit</button>
                 </form>
             </div>
         </div>
