@@ -13,27 +13,51 @@
     <title>IVR Bot</title>
 </head>
 
-<body>
+<body style="background: #0098CC;">
     <div class="container-fluid">
         <div class="jumbotron-fluid">
-            <h2 class="text-center">IVR-Bot</h2>
+
         </div>
     </div>
     <div class="container">
         <div class="row">
             <div class="col">
-                <form>
+                <form style="width: 85%; margin: auto; background: #fff; border-radius: 10px;" class="p-4 mt-4 mb-4">
+                    <div class="directions">
+                        <h2 class="text-center p-3" style="color:black;">IVR-Bot</h2>
+                        <h4>Directions:</h4>
+                        <ol>
+                            <li>
+                                Verify that script is calibrated.
+                            </li>
+                            <li>
+                                Open Cisco Finesse, and select one of the not-ready statuses.
+                            </li>
+                            <li>
+                                Paste the work order numbers below, and select if the numbers need to be checked in and
+                                out, or just checked-out.
+                            </li>
+                            <li>
+                                Make sure there are no blank spaces below the work order numbers.
+                            </li>
+                            <li>
+                                Select "Start Script"
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="form-group">
+                        <label for="numbers" style="padding: 20px;" class="text-center">Work Order Numbers:</label>
+                        <textarea class="form-control" placeholder="Paste work order numbers here." id="number-form"
+                            rows="15"></textarea>
+                    </div>
                     <div class="form-group">
                         <select class="form-control" id="type">
+                            <option></option>
                             <option>Check-Out</option>
                             <option>Check-In and Check-Out</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="numbers">Work Order Numbers:</label>
-                        <textarea class="form-control" id="number-form" rows="10"></textarea>
-                    </div>
-                    <button class="btn btn-primary" type="submit" id="submit-option">Submit</button>
+                    <button class="btn btn-primary" type="submit" id="submit-option">Start Script</button>
                 </form>
             </div>
         </div>

@@ -5,7 +5,6 @@ var fs = require("fs");
 var text = "";
 
 
-
 //function that converts a number to script
 function convert(number) {
     var macroText = "";
@@ -46,9 +45,8 @@ function convert(number) {
     return macroText;
 }
 
-
+//this function has the initial script variables and sets up the initial segment of the call
 function initial() {
-    //this function has the initial script variables and sets up the initial segment of the call
     text +=
         `#include <AutoItConstants.au3>\r\nHotKeySet("{ESC}", "Terminate")\r\n
         Func Terminate()\r\n
@@ -56,6 +54,7 @@ function initial() {
         EndFunc   ;==>Terminate\r\n`
 }
 
+//start the call
 function makeCall() {
     //define our numbers for calling and entering pin
     var callNumber = convert("15165007776");
@@ -89,12 +88,14 @@ function makeCall() {
     hash();
 }
 
-//====================================================================================================
+
 //=====================================functions to convert commonly used AutoIT methods==============
+//wait a given amount of time (num = ms)
 function sleep(num) {
     text += `Sleep(` + num + `)\r\n`;
 }
 
+//press the pound key
 function hash() {
     text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttons.mscButtons.hash.coords}, 1, 0)\r\n`
 }
@@ -130,87 +131,64 @@ function checkOut() {
 }
 
 //====================================================================================================
-//=====================================starting the call==============================================
 
-//from the .txt, push numbers into an array
-
-
-//convert each number to the macro and add to the text
-
-//     case "out":
-//         for (var i = 0; i < WOarray.length; i++) {
-//             makeCall();
-//             text += (convert(WOarray[i]))
-//             checkOut();
-//             text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttonOther.end.coords}, 1, 0)\r\n`
-//             sleep(3000)
-//         }
-//         break;
-
-// }
-
-
+//here is our actual routing
 module.exports = function (app) {
 
+    app.post("/api/workorders/:type", function (req, res) {
 
-    app.post("/api/workorders/inOut", function (req, res) {
+        //variable stores method (out or in/out)
+        var method = req.params.type;
+        
         //define our array
         var workOrders = req.body['data[]'];
 
         //do our logic to turn the work orders into macro code
         initial();
 
-        for (var i = 0; i < workOrders.length; i++) {
-            makeCall();
-            text += (convert(workOrders[i]));
-            checkIn();
-            text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttons.mscButtons.end.coords}, 1, 0)\r\n`
-            sleep(3000);
-            makeCall();
-            text += (convert(workOrders[i]))
-            checkOut();
-            text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttons.mscButtons.end.coords}, 1, 0)\r\n`
-            sleep(3000)
+        switch(method) {
+            case "inOut":
+            for (var i = 0; i < workOrders.length; i++) {
+                makeCall();
+                text += (convert(workOrders[i]));
+                checkIn();
+                text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttons.mscButtons.end.coords}, 1, 0)\r\n`
+                sleep(3000);
+                makeCall();
+                text += (convert(workOrders[i]))
+                checkOut();
+                text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttons.mscButtons.end.coords}, 1, 0)\r\n`
+                sleep(3000)
+            }
+    
+            //return the instructions to the frontend
+            fs.writeFile("test.au3", text, function (error) {
+                if (error) throw error;
+                console.log("You added to test.au3");
+                exec("test.au3").unref();
+                text = "";
+            });
+            break;
+            case "out":
+            for (var i = 0; i < workOrders.length; i++) {
+                makeCall();
+                text += (convert(workOrders[i]))
+                checkOut();
+                text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttons.mscButtons.end.coords}, 1, 0)\r\n`
+                sleep(3000)
+            }
+            //return the instructions to the frontend
+            fs.writeFile("test.au3", text, function (error) {
+                if (error) throw error;
+                console.log("You added to test.au3");
+                exec("test.au3").unref();
+                text = "";
+            });
+            break;
+            default: 
+            console.log("Error");
         }
 
-        //return the instructions to the frontend
-        fs.writeFile("test.au3", text, function (error) {
-            if (error) throw error;
-            console.log("You added to test.au3");
-            exec("test.au3").unref();
-            text = "";
-        });
+        
     })
-    app.post("/api/workorders/out", function (req, res) {
-
-        //define our array
-        var workOrders = req.body['data[]'];
-
-        //do our logic to turn the work orders into macro code
-        initial();
-
-        for (var i = 0; i < workOrders.length; i++) {
-            makeCall();
-            text += (convert(workOrders[i]))
-            checkOut();
-            text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttons.mscButtons.end.coords}, 1, 0)\r\n`
-            sleep(3000)
-        }
-        //return the instructions to the frontend
-        fs.writeFile("test.au3", text, function (error) {
-            if (error) throw error;
-            console.log("You added to test.au3");
-            exec("test.au3").unref();
-            text = "";
-        });
-    })
-
-
-
-
-
-
-
-
-
 }
