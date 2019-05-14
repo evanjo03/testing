@@ -1,6 +1,6 @@
 //reference the location of the 'one' button
-var x = 2330;
-var y = 311;
+var x = 1047        //2330;
+var y = 310        //311;
 
 //scale of buttons (px)
 var right = 80;
@@ -43,19 +43,19 @@ var numberButtons = [
 //all other buttons
 var mscButtons = {
     callStart : {
-        coords: `1400, 230`
+        coords: `106, 227`//`1400, 230`
     },
     hash : {
-        coords: `2500, 430`
+        coords: `1215, 425`//`2500, 430`
     },
     call : {
-        coords:  `2330, 475`
+        coords:  `1045, 473` //`2330, 475`
     },
     keypad : {
-        coords: `1800, 230`
+        coords: `543, 226`//`1800, 230`
     },
     end : {
-        coords: `2496, 224`
+        coords: `1232, 231` //`2496, 224`
     }
 }
 

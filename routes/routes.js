@@ -73,7 +73,7 @@ function makeCall() {
     text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttons.mscButtons.call.coords}, 1, 0)\r\n`
 
     //when call starts, select keypad button
-    sleep(3000);
+    sleep(3500);
     text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttons.mscButtons.keypad.coords}, 1, 0)\r\n`
 
     //enter pin
@@ -142,7 +142,7 @@ module.exports = function (app) {
         
         //define our array
         var workOrders = req.body['data[]'];
-
+        sleep(3000);
         //do our logic to turn the work orders into macro code
         initial();
 
