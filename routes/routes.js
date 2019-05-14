@@ -57,8 +57,8 @@ function initial() {
 //start the call
 function makeCall() {
     //define our numbers for calling and entering pin
-    var callNumber = convert("15165007776");
-    var pin = convert("38883");
+    var callNumber = convert("callnum");
+    var pin = convert("callpin");
 
     //call button
     text += `MouseClick ( $MOUSE_CLICK_LEFT, ${buttons.mscButtons.callStart.coords}, 1, 0)\r\n`
@@ -188,7 +188,5 @@ module.exports = function (app) {
             default: 
             console.log("Error");
         }
-
-        
     })
 }
